@@ -1,7 +1,12 @@
 version: '3'
 services:
   spring_boot_realworld_example_app:
-    image: allthethings/spring-boot-realworld-example-app
+    image: 0b4cb87a081e
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: "com.mysql.jdbc.Driver"
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
     ports: 
       - "8080:8080"
     depends_on: 
@@ -10,7 +15,10 @@ services:
   db:
     image: mysql
     environment:
-      - "MYSQL_ALLOW_EMPTY_PASSWORD=true"
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
     ports: 
       - "3306:3306"
 
