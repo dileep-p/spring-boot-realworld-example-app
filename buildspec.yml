@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "Install Phase - Nothing to do using latest Amazon Linux Docker Image for CodeBuild which has all AWS Tools"
+  pre_build:
+      commands:
+        - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"     
+        - echo "Verify AWS CLI Version..."
+        - aws --version
+        - echo "Login in to Amazon ECR..."
+        - $(aws ecr get-login --no-include-email)
+  build:
+    commands:
+      # Build Docker Image
+      - echo "Build started on `date`"
+      - echo "Building the Docker image..."
+      - docker build --tag $REPOSITORY_URI:$TAG .
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+      - echo "Pushing the Docker image to ECR Repository"
+      - docker push $REPOSITORY_URI:$TAG
+      - echo "Docker Image Push to ECR Completed -  $REPOSITORY_URI:$TAG" 
