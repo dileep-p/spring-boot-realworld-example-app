@@ -34,3 +34,4 @@ phases:
       - echo "Update Kube Config"      
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl get nodes
+      - kubectl get pods --all-namespaces
