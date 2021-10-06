@@ -109,6 +109,7 @@ environment_variable:
   enabled: true
   data:
     SPRING_DATASOURCE_DRIVER-CLASS-NAME: "com.mysql.jdbc.Driver"
+    SERVER_SERVLET_CONTEXT-PATH: "/api"
 
 ## Secrets Go here
 secret_variable:
