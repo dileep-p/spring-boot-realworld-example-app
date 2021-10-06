@@ -1,0 +1,9 @@
+{{- if .Values.environment_variable.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  namespace: {{ .Values.Namespace }}
+data:
+{{ toYaml .Values.environment_variable.data | indent 4  }}
+{{- end -}}

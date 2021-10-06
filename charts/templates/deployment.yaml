@@ -1,0 +1,94 @@
+{{- $appName := .Release.Name -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "charts.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "charts.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "charts.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Release.Name }}-sa
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.targetPort }}
+              containerPort: {{ .Values.service.containerPort }}
+              protocol: {{ .Values.service.protocol }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbePath }}
+              port: {{ .Values.service.containerPort }}
+              scheme: {{ .Values.service.scheme }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbePath }}
+              port: {{ .Values.service.containerPort }}
+              scheme: {{ .Values.service.scheme }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          env:
+            {{- if .Values.secret_variable.enabled -}}
+              {{- range $key, $value := .Values.secret_variable.data }}
+              - name: {{ $value }}
+                valueFrom:
+                  secretKeyRef:
+                    name: {{ $appName }}-secret
+                    key: {{ $value }}
+              {{- end }}
+              {{- end }}
+              {{- if .Values.environment_variable.enabled -}}
+              {{- range $key, $value := .Values.environment_variable.data }}
+              - name: {{ $key }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {{ $appName }}-configmap
+                    key: {{ $key }}
+              {{- end -}}
+              {{- end }}
+              - name: MY_POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              - name: MY_POD_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.podIP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
