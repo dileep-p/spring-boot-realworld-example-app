@@ -38,8 +38,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  containerPort: 80
-  port: 8080
+  containerPort: 8080
+  port: 80
   targetPort: http-port
   protocol: TCP
   scheme: HTTP
