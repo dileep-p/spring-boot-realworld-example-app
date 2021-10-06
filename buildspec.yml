@@ -11,6 +11,9 @@ phases:
         - echo "Login in to Amazon ECR..."
         - $(aws ecr get-login --no-include-email)
         - export KUBECONFIG=$HOME/.kube/config
+        - wget https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz -O helm.tar.gz; tar -xzf helm.tar.gz
+        - chmod +x ./linux-amd64/helm
+        - mv ./linux-amd64/helm /usr/local/bin/helm
   build:
     commands:
       # Build Docker Image
