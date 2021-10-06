@@ -36,6 +36,4 @@ phases:
       # Setup kubectl with our EKS Cluster
       - echo "Update Kube Config"   
       - helm version
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - kubectl get nodes
-      - kubectl get pods --all-namespaces
+      - helm upgrade --install backend --values charts/values.yaml --set-string image.tag=$TAG charts/
