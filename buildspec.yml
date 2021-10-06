@@ -31,7 +31,8 @@ phases:
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       # Setup kubectl with our EKS Cluster
-      - echo "Update Kube Config"      
+      - echo "Update Kube Config"   
+      - helm version
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl get nodes
       - kubectl get pods --all-namespaces
