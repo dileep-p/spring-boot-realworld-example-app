@@ -100,8 +100,8 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
-readinessProbePath: /actuator/health
-livenessProbePath: /actuator/health
+readinessProbePath: /api/actuator/health
+livenessProbePath: /api/actuator/health
 
 
 
