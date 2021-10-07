@@ -1,3 +1,4 @@
+{{- $appName := .Release.Name -}}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "charts.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
@@ -15,7 +16,7 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $appName }}-ingress
   namespace: {{ .Values.Namespace }}
   labels:
     {{- include "charts.labels" . | nindent 4 }}
@@ -50,11 +51,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ $fullName }}
+                name: {{ $appName }}-svc
                 port:
                   number: {{ $svcPort }}
               {{- else }}
-              serviceName: {{ $fullName }}
+              serviceName: {{ $appName }}-svc
               servicePort: {{ $svcPort }}
               {{- end }}
           {{- end }}
