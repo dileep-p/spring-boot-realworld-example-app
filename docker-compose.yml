@@ -1,7 +1,7 @@
 version: '3'
 services:
   spring_boot_realworld_example_app:
-    image: 0b4cb87a081e
+    build: .
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: "com.mysql.jdbc.Driver"
