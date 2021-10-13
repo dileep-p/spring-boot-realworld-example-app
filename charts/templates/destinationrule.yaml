@@ -1,0 +1,13 @@
+{{- $appName := .Release.Name -}}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ .Release.Name }}-dr
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "charts.labels" . | nindent 4 }}
+spec:
+  host: {{ $appName }}
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN

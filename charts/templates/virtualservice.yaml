@@ -1,0 +1,17 @@
+{{- $appName := .Release.Name -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}-vs
+  namespace: {{ .Values.Namespace }}
+  labels:
+    {{- include "charts.labels" . | nindent 4 }}
+spec:
+  hosts:
+  hosts:
+  - {{ $appName }}.{{ .Values.Namespace }}.svc.cluster.local
+  http:
+  - timeout: 5s
+    route:
+    - destination:
+        host: {{ $appName }}.{{ .Values.Namespace }}.svc.cluster.local
